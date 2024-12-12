@@ -20,7 +20,7 @@ if tee:
         st.write('【略号】')
         st.write('**TEE**: total energy expenditure（全エネルギー消費量）  \n'
                  + '**BEE**: basal energy expenditure（基礎エネルギー消費量）  \n'
-                 + '**AF**: Activity factor（活動係数)） \n'
+                 + '**AF**: Activity factor（活動係数)）  \n'
                  + '**SF**: Stress factor（ストレス係数）')
         st.write('**TEE** = **BEE** x **AF** x **SF**')
 
