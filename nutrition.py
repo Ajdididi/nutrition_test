@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import altair as alt
 
 st.title('栄養介入ツール')
 
@@ -99,14 +100,38 @@ if tpn:
                 lip = df_res.loc['Total', '脂質（g）']
                 na = df_res.loc['Total', 'Na（mEq）']
                 pota = df_res.loc['Total', 'K（mEq）']
-                
-                st.write(f'総カロリー：**{round(totalCal, 1)}** kcal')
-                st.write('カロリー内訳  \n'
-                         + f'- 糖質：{round(ch*4/totalCal*100, 1)}%  \n'
-                         + f'- タンパク質：{round(aa*4/totalCal*100, 1)}%  \n'
-                         + f'- 脂質：{round(lip*9/totalCal*100, 1)}%'
-                         )
-                st.write(f'NPC/N：**{round(npc/nitro, 1)}**')
-                st.write(f'Na量：**{round(na, 1)}** mEq（食塩{round(na/17.11, 1)}g相当）')
-                st.write(f'K量：**{round(pota, 1)}** mEq')
+                vol = df_res.loc['Total', '液量（mL）']
+
+                # カロリーの内訳を可視化
+                uchiwake = pd.DataFrame([
+                        {'栄養素': '糖質', '割合（%）': round(ch*4/totalCal*100, 1)}, 
+                        {'栄養素': 'タンパク質', '割合（%）': round(aa*4/totalCal*100, 1)},
+                        {'栄養素': '脂質', '割合（%）': round(lip*9/totalCal*100, 1)}, 
+                        ])
+                custom_colors = {'糖質': 'dodgerblue', 
+                                'タンパク質': 'skyblue', 
+                                '脂質': 'lightcyan' 
+                                }
+                chart = alt.Chart(uchiwake).mark_arc().encode(
+                            theta=alt.Theta(field='割合（%）', type="quantitative"),
+                            color=alt.Color(field='栄養素', type="nominal",
+                                            scale=alt.Scale(domain=list(custom_colors.keys()), range=list(custom_colors.values()))),
+                            tooltip=['栄養素', '割合（%）']
+                        ).properties(
+                                width=300,
+                                height=300,
+                                title='カロリーの内訳'
+                        )
+
+                st.write('')
+                col10, col11, col12 = st.columns([1, 6, 6])
+                with col11:
+                    st.write(f'総カロリー：**{round(totalCal, 1)}** kcal')
+                    st.write(f'NPC/N：**{round(npc/nitro, 1)}**')
+                    st.write(f'水分量：**{round(vol, 1)}** mL')
+                    st.write(f'Na量：**{round(na, 1)}** mEq（食塩{round(na/17.11, 1)}g相当）')
+                    st.write(f'K量：**{round(pota, 1)}** mEq')
+                with col12:
+                    st.altair_chart(chart)
+
 
