@@ -67,6 +67,7 @@ if tpn:
         st.write('')
         st.write('')
         df_q = df.query(f'製品名 in {products}')
+        df_q = df_q.reindex(products)  # multiselectで選択した順にdfのindexをsort
             
         vol_list = []
         for i in range(len(products)):
