@@ -4,7 +4,11 @@ import altair as alt
 
 st.title('栄養介入ツール')
 
-tee = st.checkbox('必要カロリー計算')
+tee = st.checkbox('**STEP1**&nbsp;必要カロリー計算')
+# セッション状態を初期化
+if "tee" not in st.session_state:
+    st.session_state.tee = None  # 初期値None
+
 if tee:
     def HarrisBenedict(height, bw, age, gender, af, sf):
         bmi = bw/(height/100)**2
@@ -15,14 +19,13 @@ if tee:
             bee = 655.1 + 9.56*bw + 1.85*height - 4.68*age
         tee = bee * af * sf
         return bmi, bee, tee
-    
+
     col1, col2 = st.columns([0.1, 0.9])
     with col2:
-        st.write('【略号】')
         st.write('**TEE**: total energy expenditure（全エネルギー消費量）  \n'
-                 + '**BEE**: basal energy expenditure（基礎エネルギー消費量）  \n'
-                 + '**AF**: Activity factor（活動係数)）  \n'
-                 + '**SF**: Stress factor（ストレス係数）')
+                    + '**BEE**: basal energy expenditure（基礎エネルギー消費量）  \n'
+                    + '**AF**: Activity factor（活動係数)）  \n'
+                    + '**SF**: Stress factor（ストレス係数）')
         st.write('**TEE** = **BEE** x **AF** x **SF**')
 
         st.write('---')
@@ -39,7 +42,7 @@ if tee:
         af = af_dict[af_key]
         sf_key = st.selectbox('SF', list(sf_dict.keys()))
         sf = sf_dict[sf_key]
-    
+
     col3, col4 = st.columns([0.85, 0.15])
     with col4:
         btn1 = st.button('TEE計算')
@@ -47,20 +50,26 @@ if tee:
     if btn1:
         col5, col6 = st.columns([0.1, 0.9])
         with col6:
-            bmi, bee, tee = HarrisBenedict(height, bw, age, gender, af, sf)
+            bmi, bee, st.session_state.tee = HarrisBenedict(height, bw, age, gender, af, sf)
 
-            st.write(f'BMI:&nbsp;&nbsp;**{round(bmi, 1)}**')  # &nbsp;(スペース)、**(太字)**
-            st.write(f'BEE: **{round(bee, 1)}**（kcal）')
-            st.write(f'AF: **{round(af, 1)}**')
-            st.write(f'SF: **{round(sf, 1)}**')
-            st.write(f'TEE: **{round(tee, 1)}**（kcal）')
+            st.info(f'BMI:&nbsp;&nbsp;**{round(bmi, 1)}**')  # &nbsp;(スペース)、**(太字)**
+            st.info(f'BEE: **{round(bee, 1)}**（kcal）')
+            st.info(f'AF: **{round(af, 1)}**')
+            st.info(f'SF: **{round(sf, 1)}**')
+            st.info(f'TEE: **{round(st.session_state.tee, 1)}**（kcal）')
 
 st.write('---')
-tpn = st.checkbox('栄養組成計算')
+
+tpn = st.checkbox('**STEP2**&nbsp;栄養組成計算')
 if tpn:
+    if st.session_state.tee is not None:
+        st.success(f"TEE: **{round(st.session_state.tee, 1)}**（kcal）")
+    else:
+        st.info("※※TEEが設定されていません※※")
+
     colA, colB = st.columns([0.1, 0.9])
     with colB:
-        df = pd.read_excel('TPNelem.xlsx', sheet_name='elem')
+        df = pd.read_excel('TPNelem_test.xlsx', sheet_name='elem')
         df.set_index('製品名', inplace=True)
 
         products = st.multiselect('薬剤選択', df.index)
@@ -76,7 +85,7 @@ if tpn:
     colC, colD = st.columns([0.9, 0.1])
     with colD:
         btn2 = st.button('計算')
-    
+
     colE, colF = st.columns([0.1, 0.9])
     with colF:
         if btn2:
@@ -135,4 +144,4 @@ if tpn:
                 with col12:
                     st.altair_chart(chart)
 
-
+            st.info('TEEはブラウザの再読み込みでリセットできます')
