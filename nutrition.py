@@ -69,7 +69,7 @@ if tpn:
 
     colA, colB = st.columns([0.1, 0.9])
     with colB:
-        df = pd.read_excel('TPNelem_test.xlsx', sheet_name='elem')
+        df = pd.read_excel('TPNelem.xlsx', sheet_name='elem')
         df.set_index('製品名', inplace=True)
 
         products = st.multiselect('薬剤選択', df.index)
