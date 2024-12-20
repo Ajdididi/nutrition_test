@@ -74,7 +74,7 @@ if tpn:
         products = st.multiselect('薬剤選択', df.index)
         st.write('')
         st.write('')
-        st.write('※溶解する経腸栄養剤は、名称に表記している液量で入力してください。必要に応じて、注射用水で水分量を調節し、実際の液量に合わせてください。')
+        st.write('※溶解する経腸栄養剤は、名称に表記している液量で入力してください。必要に応じて(厳密に水分収支も検討する場合など)、注射用水で水分量を調節し、実際の液量に合わせてください。')
         st.write('')
         df_q = df.query(f'製品名 in {products}')
         df_q = df_q.reindex(products)  # multiselectで選択した順にdfのindexをsort
