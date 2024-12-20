@@ -3,7 +3,7 @@ import pandas as pd
 import altair as alt
 
 st.title('栄養介入ツール')
-
+st.set_page_config(page_title="Wide Layout Example", layout="wide")
 tee = st.checkbox('**STEP1**&nbsp;必要カロリー計算')
 # セッション状態を初期化
 if "tee" not in st.session_state:
