@@ -111,7 +111,7 @@ if tpn:
                     df_cal = pd.DataFrame(cal).T
                     df_res = pd.concat([df_res, df_cal])
                 df_res.loc['Total'] = df_res.sum()
-                st.dataframe(df_res, width=600)
+                st.dataframe(df_res, use_container_width=True)
 
                 totalCal = df_res.loc['Total', 'カロリー（kcal）']
                 npc = df_res.loc['Total', '非たんぱく熱量（kcal）']
